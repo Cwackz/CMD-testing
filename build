@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onedir --console --add-data "/Users/1ia/Documents/Kodning/CMD/commands:commands/"  "/Users/1ia/Documents/Kodning/CMD/main.py"
