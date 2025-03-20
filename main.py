@@ -13,6 +13,9 @@ from commands.directory import change_directory
 from commands.shell_command import run_shell_command
 from commands.commands import commands
 from commands.ssh import establish_ssh_connection
+from datetime import datetime
+import platform
+import getpass
 
 console = Console()
 
@@ -39,7 +42,6 @@ logo = """
 ⠸⣦⡘⣦⠀⠀⠀⠀⣸⣄⠀⡉⠓⠚⠀⠀⠀⠀⠀⠀⠀⠀⡴⢹⣦⡀
 ⠀⠀⠉⠛⠳⢤⣴⠾⠁⠈⠟⠉⣇⠀⠀⠀⠀⠀⠀⠀⣠⠞⠁⣠⠞⠁
 ⠀⠀⠀⠀⠀⠀⠙⢧⣀⠀⠀⣠⠏⠀⠀⢀⣀⣠⠴⠛⠓⠚⠋⠀⠀⠀
-
 """
 
 INSTALL_VERSION = "1.0"  # This should match the version in install.py
@@ -54,20 +56,63 @@ def check_installation():
     
     return installed_version == INSTALL_VERSION
 
+def get_git_branch():
+    try:
+        with open(os.devnull, 'w') as fnull:
+            branch = subprocess.check_output(
+                ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+                stderr=fnull
+            ).decode('utf-8').strip()
+        return f" 󰊢 {branch}"
+    except:
+        return ""
+
+def get_python_version():
+    version = platform.python_version()
+    return f" 󰌠 {version}"
+
+def create_powerlevel_prompt():
+    # Get current directory name
+    current_dir = os.path.basename(os.getcwd())
+    if not current_dir:  # If we're at root
+        current_dir = os.getcwd()
+
+    # Get username
+    username = getpass.getuser()
+    
+    # Get current time
+    current_time = datetime.now().strftime("%H:%M:%S")
+    
+    # Get git branch
+    git_info = get_git_branch()
+    
+    # Get Python version
+    python_ver = get_python_version()
+
+    # Create segments
+    user_segment = f'<style fg="black" bg="#00875f">{username}</style>'
+    dir_segment = f'<style fg="black" bg="#d75f00"> {current_dir}</style>'
+    time_segment = f'<style fg="black" bg="#5f8700"> {current_time}</style>'
+    git_segment = f'<style fg="black" bg="#0087af">{git_info}</style>' if git_info else ''
+    python_segment = f'<style fg="black" bg="#af5f00">{python_ver}</style>'
+    
+    return f'{user_segment}{dir_segment}{time_segment}{git_segment}{python_segment} <style fg="#00ff00">❯</style> '
+
+# Update the main loop to use the new prompt
 def main():
     if not check_installation():
         # Run install.py if the current version is not installed
         subprocess.run(["python3", "install.py"])
-    
+    os.system("echo -e '\033]0; CMD\007'") #title of program
     os.system("clear")
     console.print(logo, justify="center")
-    os.system("echo -e '\033]0; CMD\007'") #title of program
     while True:
         try:
-            current_path = os.getcwd()
-            custom_prefix = f'<style fg="#000000" bg="#00ff00">{current_path}</style>'
-
-            user_input = session.prompt(HTML(f'<prompt>{custom_prefix} > </prompt>'), completer=command_completer, style=style)
+            user_input = session.prompt(
+                HTML(create_powerlevel_prompt()),
+                completer=command_completer,
+                style=style
+            )
             if user_input.strip().lower() == 'exit':
                 break
             args = user_input.split()
