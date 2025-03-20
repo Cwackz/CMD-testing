@@ -1,8 +1,13 @@
 import os
 from prompt_toolkit.completion import Completer, Completion
-from .commands import commands
+from .command_utils import get_system_commands
 
 class CommandCompleter(Completer):
+    def __init__(self):
+        self.custom_commands = ['flipper', 'clear', 'help', 'exit', 'cd', 'ssh', 'pi']
+        self.system_commands = get_system_commands()
+        self.all_commands = self.custom_commands + self.system_commands
+
     def get_completions(self, document, complete_event):
         text = document.text_before_cursor
         text_lower = text.lower()
@@ -29,6 +34,6 @@ class CommandCompleter(Completer):
                 pass
         
         else:
-            for command in commands:
+            for command in self.all_commands:
                 if command.lower().startswith(text_lower):
                     yield Completion(command, start_position=-len(text))

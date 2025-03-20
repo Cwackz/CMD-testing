@@ -12,6 +12,7 @@ def show_help():
         ("new tab", "Opens a new tab in the terminal."),
         ("exit", "Exit the CLI."),
         ("ssh", "Establish an SSH connection to a remote server."),
+        ("pi", "Connect to Raspberry Pi via SSH."),
         
     ]
 
