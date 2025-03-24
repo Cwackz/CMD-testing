@@ -10,7 +10,6 @@ from commands.utils import show_help
 from commands.directory import change_directory
 from commands.shell_command import run_shell_command
 from commands.ssh import establish_ssh_connection
-from commands.raspberry import pi
 from datetime import datetime
 import platform
 import getpass
@@ -22,8 +21,7 @@ command_handlers = {
     'help': show_help,
     'clear': lambda: (os.system('clear'), console.print(logo, justify="center")),
     'cd': change_directory,
-    'ssh': lambda: establish_ssh_connection("", ""),
-    'pi': pi
+    'ssh': lambda: establish_ssh_connection("", "")
 }
 
 style = Style.from_dict({
