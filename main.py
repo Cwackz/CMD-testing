@@ -9,6 +9,7 @@ from commands.flipper import flipper
 from commands.utils import show_help
 from commands.directory import change_directory
 from commands.shell_command import run_shell_command
+from commands.raspberry import pi 
 from commands.ssh import establish_ssh_connection
 from datetime import datetime
 import platform
@@ -21,7 +22,8 @@ command_handlers = {
     'help': show_help,
     'clear': lambda: (os.system('clear'), console.print(logo, justify="center")),
     'cd': change_directory,
-    'ssh': lambda: establish_ssh_connection("", "")
+    'ssh': lambda: establish_ssh_connection("", ""),
+    'pi': pi
 }
 
 style = Style.from_dict({

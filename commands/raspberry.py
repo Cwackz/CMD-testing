@@ -2,7 +2,7 @@ import os
 import subprocess
 
 def pi():
-    raspberry_pi_address = "pi@100.125.100.39"
+    raspberry_pi_address = "pi@raspberrypi"
     try:
         subprocess.call(['ssh', raspberry_pi_address])
     except Exception as e:
